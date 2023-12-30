@@ -1,117 +1,101 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useState } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
-  useColorScheme,
   View,
-} from 'react-native';
+  SafeAreaView,
+  Image,
+} from "react-native";
+import Swiper from "react-native-deck-swiper";
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const ColoredCard = ({ backgroundColor }: { backgroundColor: string }) => {
+  return <View style={[styles.card, { backgroundColor }]} />;
+};
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+function App() {
+  const [index, setIndex] = useState(0);
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const onSwiped = () => {
+    setIndex(index + 1);
+  }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const cardColors = ["#94e5ff", "#94f7c1", "#f7e494", "#fcaf6f", "#fa7373"];
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Swiper
+          cards={cardColors}
+          cardIndex={index}
+          renderCard={(backgroundColor, index) => <ColoredCard backgroundColor={backgroundColor} key={index} />}
+          onSwiped={onSwiped}
+          stackSize={3}
+          stackScale={5}
+          stackSeparation={25}
+          disableTopSwipe
+          disableBottomSwipe
+          infinite={true}
+          overlayLabels={{
+            left: {
+              element: (
+                <Image
+                  source={require("./assets/nope-image.png")}
+                  style={styles.overlayImage}
+                />
+              ),
+              style: {
+                wrapper: {
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  justifyContent: "flex-start",
+                  marginTop: 55,
+                  marginLeft: -10,
+                },
+              },
+            },
+            right: {
+              element: (
+                <Image
+                  source={require("./assets/like-image.png")}
+                  style={styles.overlayImage}
+                />
+              ),
+              style: {
+                wrapper: {
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                  marginTop: 55,
+                  marginLeft: 10,
+                },
+              },
+            },
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  card: {
+    marginTop: 45,
+    flex: 0.8,
+    borderRadius: 8,
+    shadowRadius: 25,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 0 },
+    justifyContent: "center",
+    alignItems: "center",
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  overlayImage: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
   },
 });
 
